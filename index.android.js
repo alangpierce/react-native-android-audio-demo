@@ -16,7 +16,10 @@ import React, {
 import tts from 'react-native-android-speech'
 import ServiceTopLevel from './ServiceTopLevel';
 
-class WikipediaReader extends Component {
+/**
+ * Container component.
+ */
+class NumberCounter extends Component {
     constructor() {
         super();
         this.state = {
@@ -28,19 +31,11 @@ class WikipediaReader extends Component {
 
     render() {
         const {isPlaying, value} = this.state;
-        return (
-            <View style={styles.container}>
-                <Text style={styles.welcome}
-                      onPress={this.toggleState.bind(this)}
-                >
-                    {isPlaying ? "Pause" : "Play"}
-                </Text>
-
-                <Text style={styles.instructions}>
-                    {value}
-                </Text>
-            </View>
-        );
+        return <NumberCounterUI
+            isPlaying={isPlaying}
+            value={value}
+            onPress={this.toggleState.bind(this)}
+        />;
     }
 
     toggleState() {
@@ -81,6 +76,26 @@ class WikipediaReader extends Component {
     }
 }
 
+/**
+ * Presentational component.
+ */
+class NumberCounterUI extends Component {
+    render() {
+        const {isPlaying, value, onPress} = this.props;
+        return (
+            <View style={styles.container}>
+                <Text style={styles.welcome} onPress={onPress}>
+                    {isPlaying ? "Pause" : "Play"}
+                </Text>
+
+                <Text style={styles.instructions}>
+                    {value}
+                </Text>
+            </View>
+        );
+    }
+}
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -102,4 +117,4 @@ const styles = StyleSheet.create({
 
 console.log("Hello from JS land!");
 
-AppRegistry.registerComponent('WikipediaReader', () => WikipediaReader);
+AppRegistry.registerComponent('NumberCounter', () => NumberCounter);

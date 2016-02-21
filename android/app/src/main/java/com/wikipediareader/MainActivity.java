@@ -146,7 +146,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
      * This is used to schedule rendering of the component.
      */
     protected String getMainComponentName() {
-        return "WikipediaReader";
+        return "NumberCounter";
     }
 
     /**
