@@ -1,0 +1,5 @@
+rootProject.name = 'WikipediaReader'
+
+include ':app'
+include ':react-native-android-speech'
+project(':react-native-android-speech').projectDir = new File(settingsDir, '../node_modules/react-native-android-speech')
