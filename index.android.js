@@ -79,22 +79,17 @@ class NumberCounter extends Component {
 /**
  * Presentational component.
  */
-class NumberCounterUI extends Component {
-    render() {
-        const {isPlaying, value, onPress} = this.props;
-        return (
-            <View style={styles.container}>
-                <Text style={styles.welcome} onPress={onPress}>
-                    {isPlaying ? "Pause" : "Play"}
-                </Text>
+const NumberCounterUI = ({isPlaying, value, onPress}) => (
+    <View style={styles.container}>
+        <Text style={styles.welcome} onPress={onPress}>
+            {isPlaying ? "Pause" : "Play"}
+        </Text>
 
-                <Text style={styles.instructions}>
-                    {value}
-                </Text>
-            </View>
-        );
-    }
-}
+        <Text style={styles.instructions}>
+            {value}
+        </Text>
+    </View>
+);
 
 const styles = StyleSheet.create({
     container: {
