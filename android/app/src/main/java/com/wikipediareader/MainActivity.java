@@ -68,9 +68,12 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
     protected void onPause() {
         super.onPause();
 
-        if (mReactInstanceManager != null) {
-            mReactInstanceManager.onPause();
-        }
+        // For now, don't forward pause events because we want the JS to run even when the app is in
+        // the background.
+        // TODO: Figure out a cleaner solution here.
+//        if (mReactInstanceManager != null) {
+//            mReactInstanceManager.onPause();
+//        }
     }
 
     @Override
@@ -86,9 +89,9 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
     protected void onDestroy() {
         super.onDestroy();
 
-        if (mReactInstanceManager != null) {
-            mReactInstanceManager.onDestroy();
-        }
+//        if (mReactInstanceManager != null) {
+//            mReactInstanceManager.onDestroy();
+//        }
     }
 
     @Override
