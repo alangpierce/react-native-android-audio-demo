@@ -15,6 +15,9 @@ import android.support.annotation.Nullable;
 public class TestService extends Service {
     private static final int ONGOING_NOTIFICATION_ID = 1;
 
+    private static final String PAUSE_ACTION_URI = "com.alangpierce.wikipediareader.pause";
+    private static final String PLAY_ACTION_URI = "com.alangpierce.wikipediareader.play";
+
     private ServiceTopLevel serviceTopLevel;
 
     @Nullable
@@ -39,6 +42,10 @@ public class TestService extends Service {
             System.out.println("Couldn't grab JS service code");
         }
 
+        startForeground(ONGOING_NOTIFICATION_ID, createNotification());
+    }
+
+    private Notification createNotification() {
         Intent mainActivityIntent = new Intent(this, MainActivity.class);
         // TODO: Figure out how to make it just dismiss the notification screen if the activity is
         // already active. This flag doesn't seem to be working like I thought it would.
@@ -46,30 +53,39 @@ public class TestService extends Service {
         PendingIntent mainActivityPendingIntent =
                 PendingIntent.getActivity(this, 0, mainActivityIntent, 0);
 
-
         Intent pauseIntent = new Intent(this, TestService.class);
-        pauseIntent.setAction("com.alangpierce.wikipediareader.pause");
+        pauseIntent.setAction(PAUSE_ACTION_URI);
         PendingIntent pausePendingIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
 
         Icon pauseIcon = Icon.createWithResource(this, android.R.drawable.ic_media_pause);
         Notification.Action pauseAction =
                 new Notification.Action.Builder(pauseIcon, "Pause", pausePendingIntent).build();
 
-        Notification notification = new Notification.Builder(this)
+
+        Intent playIntent = new Intent(this, TestService.class);
+        playIntent.setAction(PLAY_ACTION_URI);
+        PendingIntent playPendingIntent = PendingIntent.getService(this, 0, playIntent, 0);
+
+        Icon playIcon = Icon.createWithResource(this, android.R.drawable.ic_media_play);
+        Notification.Action playAction =
+                new Notification.Action.Builder(playIcon, "Play", playPendingIntent).build();
+
+        return new Notification.Builder(this)
                 .setContentTitle("Playing article")
                 .setSmallIcon(android.R.drawable.ic_menu_search)
                 .setContentIntent(mainActivityPendingIntent)
                 .addAction(pauseAction)
+                .addAction(playAction)
                 .build();
-        startForeground(ONGOING_NOTIFICATION_ID, notification);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction() != null) {
-            if (intent.getAction().equals("com.alangpierce.wikipediareader.pause")) {
-                System.out.println("Pressed the pause button!");
+            if (intent.getAction().equals(PAUSE_ACTION_URI)) {
                 serviceTopLevel.pause(0);
+            } else if (intent.getAction().equals(PLAY_ACTION_URI)) {
+                serviceTopLevel.play(0);
             }
         }
         return START_STICKY;

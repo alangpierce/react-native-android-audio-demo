@@ -1,6 +1,6 @@
 import BatchedBridge from 'BatchedBridge';
 
-import { pause } from './actions'
+import { pause, play } from './actions'
 import store from './store'
 
 const ServiceTopLevel = {
@@ -8,8 +8,10 @@ const ServiceTopLevel = {
         console.log("Hit the service top level code!");
     },
     pause: (foo) => {
-        console.log("pausing!!!");
         store.dispatch(pause());
+    },
+    play: (foo) => {
+        store.dispatch(play());
     }
 };
 
