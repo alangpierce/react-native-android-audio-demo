@@ -17,6 +17,7 @@ public class TestService extends Service {
 
     private static final String PAUSE_ACTION_URI = "com.alangpierce.wikipediareader.pause";
     private static final String PLAY_ACTION_URI = "com.alangpierce.wikipediareader.play";
+    public static final String REDRAW_NOTIFICATION_URI = "com.alangpierce.wikipediareader.redraw";
 
     private ServiceTopLevel serviceTopLevel;
 
@@ -42,10 +43,12 @@ public class TestService extends Service {
             System.out.println("Couldn't grab JS service code");
         }
 
-        startForeground(ONGOING_NOTIFICATION_ID, createNotification());
+        startForeground(ONGOING_NOTIFICATION_ID, createNotification(false));
+
+        serviceTopLevel.initService(0);
     }
 
-    private Notification createNotification() {
+    private Notification createNotification(boolean isPlaying) {
         Intent mainActivityIntent = new Intent(this, MainActivity.class);
         // TODO: Figure out how to make it just dismiss the notification screen if the activity is
         // already active. This flag doesn't seem to be working like I thought it would.
@@ -61,7 +64,6 @@ public class TestService extends Service {
         Notification.Action pauseAction =
                 new Notification.Action.Builder(pauseIcon, "Pause", pausePendingIntent).build();
 
-
         Intent playIntent = new Intent(this, TestService.class);
         playIntent.setAction(PLAY_ACTION_URI);
         PendingIntent playPendingIntent = PendingIntent.getService(this, 0, playIntent, 0);
@@ -70,12 +72,13 @@ public class TestService extends Service {
         Notification.Action playAction =
                 new Notification.Action.Builder(playIcon, "Play", playPendingIntent).build();
 
+        Notification.Action action = isPlaying ? playAction : pauseAction;
+
         return new Notification.Builder(this)
                 .setContentTitle("Playing article")
                 .setSmallIcon(android.R.drawable.ic_menu_search)
                 .setContentIntent(mainActivityPendingIntent)
-                .addAction(pauseAction)
-                .addAction(playAction)
+                .addAction(action)
                 .build();
     }
 
@@ -86,6 +89,9 @@ public class TestService extends Service {
                 serviceTopLevel.pause(0);
             } else if (intent.getAction().equals(PLAY_ACTION_URI)) {
                 serviceTopLevel.play(0);
+            } else if (intent.getAction().equals(REDRAW_NOTIFICATION_URI)) {
+                boolean isPlaying = intent.getBooleanExtra("isPlaying",false);
+                startForeground(ONGOING_NOTIFICATION_ID, createNotification(isPlaying));
             }
         }
         return START_STICKY;

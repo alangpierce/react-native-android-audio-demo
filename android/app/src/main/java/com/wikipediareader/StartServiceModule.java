@@ -26,4 +26,12 @@ public class StartServiceModule extends ReactContextBaseJavaModule {
         Intent serviceIntent = new Intent(mReactApplicationContext, TestService.class);
         mReactApplicationContext.startService(serviceIntent);
     }
+
+    @ReactMethod
+    public void invalidateNotification(boolean isPlaying) {
+        Intent redrawIntent = new Intent(mReactApplicationContext, TestService.class);
+        redrawIntent.setAction(TestService.REDRAW_NOTIFICATION_URI);
+        redrawIntent.putExtra("isPlaying", isPlaying);
+        mReactApplicationContext.startService(redrawIntent);
+    }
 }
