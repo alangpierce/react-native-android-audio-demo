@@ -17,7 +17,7 @@ const observeStore = (handler) => {
 
 const ServiceTopLevel = {
     initService: (foo) => {
-        observeStore((oldState, newState) => {
+        observeStore((newState, oldState) => {
             const isPlaying = newState.isPlaying;
             if (oldState.isPlaying != isPlaying) {
                 NativeModules.StartService.invalidateNotification(isPlaying);

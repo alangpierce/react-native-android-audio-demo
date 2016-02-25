@@ -8,9 +8,9 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.drawable.Icon;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.widget.RemoteViews;
 
 public class TestService extends Service {
     private static final int ONGOING_NOTIFICATION_ID = 1;
@@ -29,8 +29,6 @@ public class TestService extends Service {
 
     @Override
     public void onCreate() {
-        System.out.println("Created the test service");
-
         ReactInstanceManager reactInstanceManager =
                 ReactInstanceSingleton.getReactInstanceManager(getApplication());
 
@@ -43,7 +41,8 @@ public class TestService extends Service {
             System.out.println("Couldn't grab JS service code");
         }
 
-        startForeground(ONGOING_NOTIFICATION_ID, createNotification(false));
+        // The service always starts by starting audio, so true is a good default for isPlaying.
+        startForeground(ONGOING_NOTIFICATION_ID, createNotification(true));
 
         serviceTopLevel.initService(0);
     }
@@ -56,29 +55,30 @@ public class TestService extends Service {
         PendingIntent mainActivityPendingIntent =
                 PendingIntent.getActivity(this, 0, mainActivityIntent, 0);
 
-        Intent pauseIntent = new Intent(this, TestService.class);
-        pauseIntent.setAction(PAUSE_ACTION_URI);
-        PendingIntent pausePendingIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
+        int buttonImage;
+        String actionUri;
+        if (isPlaying) {
+            buttonImage = android.R.drawable.ic_media_pause;
+            actionUri = PAUSE_ACTION_URI;
+        } else {
+            buttonImage = android.R.drawable.ic_media_play;
+            actionUri = PLAY_ACTION_URI;
+        }
 
-        Icon pauseIcon = Icon.createWithResource(this, android.R.drawable.ic_media_pause);
-        Notification.Action pauseAction =
-                new Notification.Action.Builder(pauseIcon, "Pause", pausePendingIntent).build();
+        RemoteViews notificationView = new RemoteViews(getPackageName(), R.layout.media_notification);
 
-        Intent playIntent = new Intent(this, TestService.class);
-        playIntent.setAction(PLAY_ACTION_URI);
-        PendingIntent playPendingIntent = PendingIntent.getService(this, 0, playIntent, 0);
+        Intent actionIntent = new Intent(this, TestService.class);
+        actionIntent.setAction(actionUri);
+        PendingIntent actionPendingIntent = PendingIntent.getService(this, 0, actionIntent, 0);
 
-        Icon playIcon = Icon.createWithResource(this, android.R.drawable.ic_media_play);
-        Notification.Action playAction =
-                new Notification.Action.Builder(playIcon, "Play", playPendingIntent).build();
-
-        Notification.Action action = isPlaying ? playAction : pauseAction;
+        notificationView.setImageViewResource(R.id.play_pause_button, buttonImage);
+        notificationView.setOnClickPendingIntent(R.id.play_pause_button, actionPendingIntent);
 
         return new Notification.Builder(this)
-                .setContentTitle("Playing article")
                 .setSmallIcon(android.R.drawable.ic_menu_search)
+                .setContentText("")
+                .setContent(notificationView)
                 .setContentIntent(mainActivityPendingIntent)
-                .addAction(action)
                 .build();
     }
 
@@ -90,7 +90,7 @@ public class TestService extends Service {
             } else if (intent.getAction().equals(PLAY_ACTION_URI)) {
                 serviceTopLevel.play(0);
             } else if (intent.getAction().equals(REDRAW_NOTIFICATION_URI)) {
-                boolean isPlaying = intent.getBooleanExtra("isPlaying",false);
+                boolean isPlaying = intent.getBooleanExtra("isPlaying", false);
                 startForeground(ONGOING_NOTIFICATION_ID, createNotification(isPlaying));
             }
         }
