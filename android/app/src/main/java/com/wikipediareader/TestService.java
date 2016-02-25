@@ -92,6 +92,11 @@ public class TestService extends Service {
             } else if (intent.getAction().equals(REDRAW_NOTIFICATION_URI)) {
                 boolean isPlaying = intent.getBooleanExtra("isPlaying", false);
                 startForeground(ONGOING_NOTIFICATION_ID, createNotification(isPlaying));
+                if (!isPlaying) {
+                    // In a paused state, we don't want the notification to be ongoing. Clearing the
+                    // foreground state does that.
+                    stopForeground(false /* removeNotification */);
+                }
             }
         }
         return START_STICKY;
