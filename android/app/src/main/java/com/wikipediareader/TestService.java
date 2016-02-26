@@ -8,8 +8,10 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.widget.RemoteViews;
 
 public class TestService extends Service {
@@ -65,11 +67,21 @@ public class TestService extends Service {
             actionUri = PLAY_ACTION_URI;
         }
 
-        RemoteViews notificationView = new RemoteViews(getPackageName(), R.layout.media_notification);
-
         Intent actionIntent = new Intent(this, TestService.class);
         actionIntent.setAction(actionUri);
         PendingIntent actionPendingIntent = PendingIntent.getService(this, 0, actionIntent, 0);
+
+        RemoteViews notificationView = new RemoteViews(getPackageName(), R.layout.linear_layout);
+        notificationView.removeAllViews(R.id.linear_layout);
+
+        notificationView.setInt(R.id.linear_layout, "setBackgroundColor", Color.parseColor("#000000"));
+        notificationView.setInt(R.id.linear_layout, "setGravity", Gravity.CENTER_HORIZONTAL);
+
+        RemoteViews textView = new RemoteViews(getPackageName(), R.layout.text_view);
+        notificationView.addView(R.id.linear_layout, textView);
+
+        RemoteViews button = new RemoteViews(getPackageName(), R.layout.image_button);
+        notificationView.addView(R.id.linear_layout, button);
 
         notificationView.setImageViewResource(R.id.play_pause_button, buttonImage);
         notificationView.setOnClickPendingIntent(R.id.play_pause_button, actionPendingIntent);
