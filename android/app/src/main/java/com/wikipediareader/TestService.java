@@ -1,5 +1,8 @@
 package com.wikipediareader;
 
+import com.alangpierce.reactremoteviews.RemoteViewNode;
+import com.alangpierce.reactremoteviews.RemoteViewProperty;
+import com.alangpierce.reactremoteviews.RemoteViewRenderer;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.CatalystInstance;
 import com.facebook.react.bridge.ReactContext;
@@ -13,6 +16,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.widget.RemoteViews;
+
+import java.util.Arrays;
 
 public class TestService extends Service {
     private static final int ONGOING_NOTIFICATION_ID = 1;
@@ -71,20 +76,23 @@ public class TestService extends Service {
         actionIntent.setAction(actionUri);
         PendingIntent actionPendingIntent = PendingIntent.getService(this, 0, actionIntent, 0);
 
-        RemoteViews notificationView = new RemoteViews(getPackageName(), R.layout.linear_layout);
-        notificationView.removeAllViews(R.id.linear_layout);
+//        RemoteViews notificationView = new RemoteViews(getPackageName(), R.layout.linear_layout);
+//        notificationView.removeAllViews(R.id.linear_layout);
+//
+//        notificationView.setInt(R.id.linear_layout, "setBackgroundColor", Color.parseColor("#000000"));
+//        notificationView.setInt(R.id.linear_layout, "setGravity", Gravity.CENTER_HORIZONTAL);
+//
+//        RemoteViews textView = new RemoteViews(getPackageName(), R.layout.text_view);
+//        notificationView.addView(R.id.linear_layout, textView);
+//
+//        RemoteViews button = new RemoteViews(getPackageName(), R.layout.image_button);
+//        notificationView.addView(R.id.linear_layout, button);
+//
+//        notificationView.setImageViewResource(R.id.play_pause_button, buttonImage);
+//        notificationView.setOnClickPendingIntent(R.id.play_pause_button, actionPendingIntent);
 
-        notificationView.setInt(R.id.linear_layout, "setBackgroundColor", Color.parseColor("#000000"));
-        notificationView.setInt(R.id.linear_layout, "setGravity", Gravity.CENTER_HORIZONTAL);
-
-        RemoteViews textView = new RemoteViews(getPackageName(), R.layout.text_view);
-        notificationView.addView(R.id.linear_layout, textView);
-
-        RemoteViews button = new RemoteViews(getPackageName(), R.layout.image_button);
-        notificationView.addView(R.id.linear_layout, button);
-
-        notificationView.setImageViewResource(R.id.play_pause_button, buttonImage);
-        notificationView.setOnClickPendingIntent(R.id.play_pause_button, actionPendingIntent);
+        RemoteViews notificationView =
+                new RemoteViewRenderer(getPackageName()).renderNode(renderNode());
 
         return new Notification.Builder(this)
                 .setSmallIcon(android.R.drawable.ic_menu_search)
@@ -92,6 +100,28 @@ public class TestService extends Service {
                 .setContent(notificationView)
                 .setContentIntent(mainActivityPendingIntent)
                 .build();
+    }
+
+    private RemoteViewNode renderNode() {
+        return new RemoteViewNode(
+                "LinearLayout",
+                Arrays.asList(
+                        new RemoteViewProperty("setBackgroundColor", RemoteViewProperty.PropertyType.INT, Color.parseColor("#000000")),
+                        new RemoteViewProperty("setGravity", RemoteViewProperty.PropertyType.INT, Gravity.CENTER_HORIZONTAL)
+                ),
+                Arrays.asList(
+                        new RemoteViewNode(
+                                "TextView",
+                                Arrays.<RemoteViewProperty>asList(),
+                                Arrays.<RemoteViewNode>asList()
+                        ),
+                        new RemoteViewNode(
+                                "ImageButton",
+                                Arrays.<RemoteViewProperty>asList(),
+                                Arrays.<RemoteViewNode>asList()
+                        )
+                )
+        );
     }
 
     @Override
