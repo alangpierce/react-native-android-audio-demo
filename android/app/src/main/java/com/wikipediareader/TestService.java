@@ -74,25 +74,12 @@ public class TestService extends Service {
 
         Intent actionIntent = new Intent(this, TestService.class);
         actionIntent.setAction(actionUri);
-        PendingIntent actionPendingIntent = PendingIntent.getService(this, 0, actionIntent, 0);
-
-//        RemoteViews notificationView = new RemoteViews(getPackageName(), R.layout.linear_layout);
-//        notificationView.removeAllViews(R.id.linear_layout);
-//
-//        notificationView.setInt(R.id.linear_layout, "setBackgroundColor", Color.parseColor("#000000"));
-//        notificationView.setInt(R.id.linear_layout, "setGravity", Gravity.CENTER_HORIZONTAL);
-//
-//        RemoteViews textView = new RemoteViews(getPackageName(), R.layout.text_view);
-//        notificationView.addView(R.id.linear_layout, textView);
-//
-//        RemoteViews button = new RemoteViews(getPackageName(), R.layout.image_button);
-//        notificationView.addView(R.id.linear_layout, button);
-//
-//        notificationView.setImageViewResource(R.id.play_pause_button, buttonImage);
-//        notificationView.setOnClickPendingIntent(R.id.play_pause_button, actionPendingIntent);
 
         RemoteViews notificationView =
                 new RemoteViewRenderer(getPackageName()).renderNode(renderNode());
+
+//        PendingIntent actionPendingIntent = PendingIntent.getService(this, 0, actionIntent, 0);
+//        notificationView.setOnClickPendingIntent(R.id.play_pause_button, actionPendingIntent);
 
         return new Notification.Builder(this)
                 .setSmallIcon(android.R.drawable.ic_menu_search)
@@ -104,22 +91,27 @@ public class TestService extends Service {
 
     private RemoteViewNode renderNode() {
         return new RemoteViewNode(
-                "LinearLayout",
+                "LinearLayoutMatchParent",
                 Arrays.asList(
                         new RemoteViewProperty("setBackgroundColor", RemoteViewProperty.PropertyType.INT, Color.parseColor("#000000")),
-                        new RemoteViewProperty("setGravity", RemoteViewProperty.PropertyType.INT, Gravity.CENTER_HORIZONTAL)
+                        new RemoteViewProperty("setGravity", RemoteViewProperty.PropertyType.INT, Gravity.CENTER)
                 ),
                 Arrays.asList(
                         new RemoteViewNode(
                                 "TextView",
                                 Arrays.<RemoteViewProperty>asList(
-                                        new RemoteViewProperty("setText", RemoteViewProperty.PropertyType.CHAR_SEQUENCE, "Counting")
+                                        new RemoteViewProperty("setText", RemoteViewProperty.PropertyType.CHAR_SEQUENCE, "Counting"),
+                                        new RemoteViewProperty("setTextSize", RemoteViewProperty.PropertyType.FLOAT, 20.0f),
+                                        new RemoteViewProperty("setTextColor", RemoteViewProperty.PropertyType.INT, Color.parseColor("#ffffff"))
                                 ),
                                 Arrays.<RemoteViewNode>asList()
                         ),
                         new RemoteViewNode(
                                 "ImageButton",
-                                Arrays.<RemoteViewProperty>asList(),
+                                Arrays.<RemoteViewProperty>asList(
+                                        new RemoteViewProperty("setImageResource", RemoteViewProperty.PropertyType.INT, android.R.drawable.ic_media_play),
+                                        new RemoteViewProperty("setBackgroundColor", RemoteViewProperty.PropertyType.INT, Color.parseColor("#000000"))
+                                ),
                                 Arrays.<RemoteViewNode>asList()
                         )
                 )

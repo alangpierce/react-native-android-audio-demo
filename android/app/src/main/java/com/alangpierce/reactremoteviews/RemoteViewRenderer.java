@@ -25,6 +25,9 @@ public class RemoteViewRenderer {
                 case STRING:
                     result.setString(R.id.remote_view, property.getMethodName(), (String) property.getValue());
                     break;
+                case FLOAT:
+                    result.setFloat(R.id.remote_view, property.getMethodName(), (float) property.getValue());
+                    break;
                 case INT:
                     result.setInt(R.id.remote_view, property.getMethodName(), (int) property.getValue());
                     break;
@@ -41,8 +44,10 @@ public class RemoteViewRenderer {
 
     private int layoutIdForClass(String className) {
         switch (className) {
-            case "LinearLayout":
-                return R.layout.linear_layout;
+            case "LinearLayoutWrapContent":
+                return R.layout.linear_layout_wrap_content;
+            case "LinearLayoutMatchParent":
+                return R.layout.linear_layout_match_parent;
             case "TextView":
                 return R.layout.text_view;
             case "ImageButton":
