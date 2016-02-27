@@ -12,6 +12,7 @@ public class RemoteViewProperty {
     }
 
     public enum PropertyType {
+        CHAR_SEQUENCE,
         STRING,
         INT
     }

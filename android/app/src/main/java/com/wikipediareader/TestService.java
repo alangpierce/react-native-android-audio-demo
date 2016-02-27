@@ -112,7 +112,9 @@ public class TestService extends Service {
                 Arrays.asList(
                         new RemoteViewNode(
                                 "TextView",
-                                Arrays.<RemoteViewProperty>asList(),
+                                Arrays.<RemoteViewProperty>asList(
+                                        new RemoteViewProperty("setText", RemoteViewProperty.PropertyType.CHAR_SEQUENCE, "Counting")
+                                ),
                                 Arrays.<RemoteViewNode>asList()
                         ),
                         new RemoteViewNode(

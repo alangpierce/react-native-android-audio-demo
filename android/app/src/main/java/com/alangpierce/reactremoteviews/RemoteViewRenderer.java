@@ -11,20 +11,30 @@ public class RemoteViewRenderer {
         mPackageName = packageName;
     }
 
+    /**
+     * Note that every layout XML uses the ID remote_view for its only view, so we can always use
+     * that ID.
+     */
     public RemoteViews renderNode(RemoteViewNode node) {
         RemoteViews result = new RemoteViews(mPackageName, layoutIdForClass(node.getClassName()));
         for (RemoteViewProperty property : node.getProperties()) {
             switch (property.getPropertyType()) {
+                case CHAR_SEQUENCE:
+                    result.setCharSequence(R.id.remote_view, property.getMethodName(), (CharSequence) property.getValue());
+                    break;
                 case STRING:
-                    result.setString(R.id.linear_layout, property.getMethodName(), (String) property.getValue());
+                    result.setString(R.id.remote_view, property.getMethodName(), (String) property.getValue());
                     break;
                 case INT:
-                    result.setInt(R.id.linear_layout, property.getMethodName(), (int) property.getValue());
+                    result.setInt(R.id.remote_view, property.getMethodName(), (int) property.getValue());
                     break;
             }
         }
-        for (RemoteViewNode childNode : node.getChildren()) {
-            result.addView(R.id.linear_layout, renderNode(childNode));
+        if (!node.getChildren().isEmpty()) {
+            result.removeAllViews(R.id.remote_view);
+            for (RemoteViewNode childNode : node.getChildren()) {
+                result.addView(R.id.remote_view, renderNode(childNode));
+            }
         }
         return result;
     }
