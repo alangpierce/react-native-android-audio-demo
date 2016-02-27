@@ -2,6 +2,7 @@ package com.alangpierce.reactremoteviews;
 
 import com.wikipediareader.R;
 
+import android.app.PendingIntent;
 import android.widget.RemoteViews;
 
 public class RemoteViewRenderer {
@@ -38,6 +39,10 @@ public class RemoteViewRenderer {
             for (RemoteViewNode childNode : node.getChildren()) {
                 result.addView(R.id.remote_view, renderNode(childNode));
             }
+        }
+        PendingIntent onClick = node.getOnClick();
+        if (onClick != null) {
+            result.setOnClickPendingIntent(R.id.remote_view, onClick);
         }
         return result;
     }

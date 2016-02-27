@@ -75,22 +75,9 @@ public class TestService extends Service {
         Intent actionIntent = new Intent(this, TestService.class);
         actionIntent.setAction(actionUri);
 
-        RemoteViews notificationView =
-                new RemoteViewRenderer(getPackageName()).renderNode(renderNode());
+        PendingIntent actionPendingIntent = PendingIntent.getService(this, 0, actionIntent, 0);
 
-//        PendingIntent actionPendingIntent = PendingIntent.getService(this, 0, actionIntent, 0);
-//        notificationView.setOnClickPendingIntent(R.id.play_pause_button, actionPendingIntent);
-
-        return new Notification.Builder(this)
-                .setSmallIcon(android.R.drawable.ic_menu_search)
-                .setContentText("")
-                .setContent(notificationView)
-                .setContentIntent(mainActivityPendingIntent)
-                .build();
-    }
-
-    private RemoteViewNode renderNode() {
-        return new RemoteViewNode(
+        RemoteViewNode node = new RemoteViewNode(
                 "LinearLayoutMatchParent",
                 Arrays.asList(
                         new RemoteViewProperty("setBackgroundColor", RemoteViewProperty.PropertyType.INT, Color.parseColor("#000000")),
@@ -104,18 +91,30 @@ public class TestService extends Service {
                                         new RemoteViewProperty("setTextSize", RemoteViewProperty.PropertyType.FLOAT, 20.0f),
                                         new RemoteViewProperty("setTextColor", RemoteViewProperty.PropertyType.INT, Color.parseColor("#ffffff"))
                                 ),
-                                Arrays.<RemoteViewNode>asList()
+                                Arrays.<RemoteViewNode>asList(),
+                                null
                         ),
                         new RemoteViewNode(
                                 "ImageButton",
                                 Arrays.<RemoteViewProperty>asList(
-                                        new RemoteViewProperty("setImageResource", RemoteViewProperty.PropertyType.INT, android.R.drawable.ic_media_play),
+                                        new RemoteViewProperty("setImageResource", RemoteViewProperty.PropertyType.INT, buttonImage),
                                         new RemoteViewProperty("setBackgroundColor", RemoteViewProperty.PropertyType.INT, Color.parseColor("#000000"))
                                 ),
-                                Arrays.<RemoteViewNode>asList()
+                                Arrays.<RemoteViewNode>asList(),
+                                actionPendingIntent
                         )
-                )
+                ),
+                null
         );
+
+        RemoteViews notificationView = new RemoteViewRenderer(getPackageName()).renderNode(node);
+
+        return new Notification.Builder(this)
+                .setSmallIcon(android.R.drawable.ic_menu_search)
+                .setContentText("")
+                .setContent(notificationView)
+                .setContentIntent(mainActivityPendingIntent)
+                .build();
     }
 
     @Override
