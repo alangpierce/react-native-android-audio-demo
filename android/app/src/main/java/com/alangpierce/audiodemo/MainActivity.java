@@ -1,4 +1,4 @@
-package com.audiodemo;
+package com.alangpierce.audiodemo;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.react.ReactInstanceManager;

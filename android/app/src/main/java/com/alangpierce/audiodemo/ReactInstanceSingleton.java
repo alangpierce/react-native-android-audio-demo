@@ -1,4 +1,4 @@
-package com.audiodemo;
+package com.alangpierce.audiodemo;
 
 import com.alangpierce.reactremoteviews.RemoteViewsPackage;
 import com.facebook.react.LifecycleState;

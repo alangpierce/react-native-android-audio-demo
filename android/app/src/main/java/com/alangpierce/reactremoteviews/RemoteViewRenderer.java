@@ -1,6 +1,6 @@
 package com.alangpierce.reactremoteviews;
 
-import com.audiodemo.R;
+import com.alangpierce.audiodemo.R;
 
 import android.app.PendingIntent;
 import android.widget.RemoteViews;

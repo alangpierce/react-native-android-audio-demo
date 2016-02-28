@@ -1,4 +1,4 @@
-package com.audiodemo;
+package com.alangpierce.audiodemo;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;

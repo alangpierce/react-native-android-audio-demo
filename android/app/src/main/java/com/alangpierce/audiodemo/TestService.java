@@ -1,4 +1,4 @@
-package com.audiodemo;
+package com.alangpierce.audiodemo;
 
 import com.alangpierce.reactremoteviews.RemoteViewNode;
 import com.alangpierce.reactremoteviews.RemoteViewProperty;
@@ -32,7 +32,7 @@ public class TestService extends Service {
     // PendingIntent per URI. If we try to specify the callback ID through an extra, different
     // PendingIntents will clobber each other.
     private static final String RUN_CALLBACK_URI_PREFIX = "com.alangpierce.runcallback.";
-    public static final String REDRAW_NOTIFICATION_URI = "com.alangpierce.wikipediareader.redraw";
+    public static final String REDRAW_NOTIFICATION_URI = "com.alangpierce.audiodemo.redraw";
 
     private ServiceTopLevel serviceTopLevel;
     private RemoteViewsModule mRemoteViewsModule;
