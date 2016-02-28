@@ -30,6 +30,7 @@ const ServiceTopLevel = {
                 const ImageButton = "ImageButton";
 
                 const notification = {
+                    isForeground: isPlaying,
                     customView: <LinearLayout backgroundColor="#000000"
                                               gravity="center">
                         <TextView text="Counting"
@@ -41,12 +42,8 @@ const ServiceTopLevel = {
                     </LinearLayout>
                 };
 
-                console.log("JSX value:");
-                console.log(foo);
-
-                console.log("Making call to invalidateNotification");
                 NativeModules.StartService.invalidateNotification(
-                    isPlaying, JSON.stringify(notification));
+                    JSON.stringify(notification));
             }
         });
     },

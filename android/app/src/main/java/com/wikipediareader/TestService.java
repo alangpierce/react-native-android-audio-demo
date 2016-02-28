@@ -60,7 +60,7 @@ public class TestService extends Service {
         serviceTopLevel.initService(0);
     }
 
-    private Notification createNotification(boolean isPlaying, JsonElement notificationElement) {
+    private Notification createNotification(JsonObject notificationObject) {
         Intent mainActivityIntent = new Intent(this, MainActivity.class);
         // TODO: Figure out how to make it just dismiss the notification screen if the activity is
         // already active. This flag doesn't seem to be working like I thought it would.
@@ -68,7 +68,7 @@ public class TestService extends Service {
         PendingIntent mainActivityPendingIntent =
                 PendingIntent.getActivity(this, 0, mainActivityIntent, 0);
 
-        RemoteViewNode node = parseRemoteViewNode(notificationElement.getAsJsonObject().getAsJsonObject("customView"));
+        RemoteViewNode node = parseRemoteViewNode(notificationObject.getAsJsonObject("customView"));
 
         RemoteViews notificationView = new RemoteViewRenderer(getPackageName()).renderNode(node);
 
@@ -137,11 +137,10 @@ public class TestService extends Service {
             } else if (intent.getAction().equals(PLAY_ACTION_URI)) {
                 serviceTopLevel.play(0);
             } else if (intent.getAction().equals(REDRAW_NOTIFICATION_URI)) {
-                boolean isPlaying = intent.getBooleanExtra("isPlaying", false);
                 String notificationJson = intent.getStringExtra("notification");
-                JsonElement notificationElement = new JsonParser().parse(notificationJson);
-                startForeground(ONGOING_NOTIFICATION_ID, createNotification(isPlaying, notificationElement));
-                if (!isPlaying) {
+                JsonObject notificationObject = new JsonParser().parse(notificationJson).getAsJsonObject();
+                startForeground(ONGOING_NOTIFICATION_ID, createNotification(notificationObject));
+                if (!notificationObject.get("isForeground").getAsBoolean()) {
                     // In a paused state, we don't want the notification to be ongoing. Clearing the
                     // foreground state does that.
                     stopForeground(false /* removeNotification */);
@@ -150,6 +149,4 @@ public class TestService extends Service {
         }
         return START_STICKY;
     }
-
-
 }
