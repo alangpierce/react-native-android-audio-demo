@@ -22,6 +22,7 @@ const ServiceTopLevel = {
             if (oldState.isPlaying != isPlaying) {
                 // ic_media_pause and ic_media_play
                 const iconResource = isPlaying ? 17301539 : 17301540;
+                const actionUri = isPlaying ? "com.alangpierce.wikipediareader.pause" : "com.alangpierce.wikipediareader.play";
                 const notification = {
                     customView: {
                         type: "LinearLayout",
@@ -49,7 +50,7 @@ const ServiceTopLevel = {
                                     backgroundColor: "#000000",
                                 },
                                 children: [],
-                                onClick: null,
+                                onClick: actionUri,
                             }
                         ],
                         onClick: null,

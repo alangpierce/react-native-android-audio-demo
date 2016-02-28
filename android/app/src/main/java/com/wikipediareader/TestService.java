@@ -68,21 +68,6 @@ public class TestService extends Service {
         PendingIntent mainActivityPendingIntent =
                 PendingIntent.getActivity(this, 0, mainActivityIntent, 0);
 
-        int buttonImage;
-        String actionUri;
-        if (isPlaying) {
-            buttonImage = android.R.drawable.ic_media_pause;
-            actionUri = PAUSE_ACTION_URI;
-        } else {
-            buttonImage = android.R.drawable.ic_media_play;
-            actionUri = PLAY_ACTION_URI;
-        }
-
-        Intent actionIntent = new Intent(this, TestService.class);
-        actionIntent.setAction(actionUri);
-
-        PendingIntent actionPendingIntent = PendingIntent.getService(this, 0, actionIntent, 0);
-
         RemoteViewNode node = parseRemoteViewNode(notificationElement.getAsJsonObject().getAsJsonObject("customView"));
 
         RemoteViews notificationView = new RemoteViewRenderer(getPackageName()).renderNode(node);
@@ -107,15 +92,19 @@ public class TestService extends Service {
             children.add(parseRemoteViewNode(childElement.getAsJsonObject()));
         }
 
-        if (viewElement.has("onClick")) {
-            // TODO
+        PendingIntent onClick = null;
+        if (viewElement.has("onClick") && !viewElement.get("onClick").isJsonNull()) {
+            String actionUri = viewElement.get("onClick").getAsString();
+            Intent actionIntent = new Intent(this, TestService.class);
+            actionIntent.setAction(actionUri);
+            onClick = PendingIntent.getService(this, 0, actionIntent, 0);
         }
 
         return new RemoteViewNode(
                 viewElement.get("type").getAsString(),
                 properties,
                 children,
-                null);
+                onClick);
     }
 
     private RemoteViewProperty parseProperty(Map.Entry<String, JsonElement> entry) {
