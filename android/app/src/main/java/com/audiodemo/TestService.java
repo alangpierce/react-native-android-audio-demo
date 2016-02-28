@@ -1,4 +1,4 @@
-package com.wikipediareader;
+package com.audiodemo;
 
 import com.alangpierce.reactremoteviews.RemoteViewNode;
 import com.alangpierce.reactremoteviews.RemoteViewProperty;

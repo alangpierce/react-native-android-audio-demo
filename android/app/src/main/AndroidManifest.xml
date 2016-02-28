@@ -1,4 +1,4 @@
-<manifest package="com.wikipediareader"
+<manifest package="com.audiodemo"
           xmlns:android="http://schemas.android.com/apk/res/android"
     >
 
@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme"
         >
         <activity
-            android:name=".MainActivity"
+            android:name="com.audiodemo.MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             >
@@ -22,7 +22,6 @@
         </activity>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>
 
-        <service android:name=".TestService"/>
+        <service android:name="com.audiodemo.TestService"/>
     </application>
-
 </manifest>

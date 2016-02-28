@@ -1,4 +1,4 @@
-package com.wikipediareader;
+package com.audiodemo;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;

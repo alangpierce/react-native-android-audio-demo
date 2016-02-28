@@ -1,4 +1,4 @@
-package com.wikipediareader;
+package com.audiodemo;
 
 import com.alangpierce.reactremoteviews.RemoteViewsPackage;
 import com.facebook.react.LifecycleState;

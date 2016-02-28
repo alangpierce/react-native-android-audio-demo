@@ -1,6 +1,6 @@
 package com.alangpierce.reactremoteviews;
 
-import com.wikipediareader.R;
+import com.audiodemo.R;
 
 import android.app.PendingIntent;
 import android.widget.RemoteViews;

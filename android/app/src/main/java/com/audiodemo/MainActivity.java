@@ -1,4 +1,4 @@
-package com.wikipediareader;
+package com.audiodemo;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.react.ReactInstanceManager;
