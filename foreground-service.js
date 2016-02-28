@@ -11,4 +11,4 @@ import React, {
     View
 } from 'react-native';
 
-AppRegistry.registerComponent('WikipediaReader', () => WikipediaReader);
+AppRegistry.registerComponent('AudioDemo', () => AudioDemo);
