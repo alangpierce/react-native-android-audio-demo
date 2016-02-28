@@ -81,30 +81,31 @@ public class TestService extends Service {
     }
 
     private RemoteViewNode parseRemoteViewNode(JsonObject viewElement) {
-        List<RemoteViewProperty> properties = new ArrayList<>();
-
-        for (Map.Entry<String, JsonElement> entry : viewElement.getAsJsonObject("properties").entrySet()) {
-            properties.add(parseProperty(entry));
-        }
-
+        List<RemoteViewProperty> props = new ArrayList<>();
         List<RemoteViewNode> children = new ArrayList<>();
-        for (JsonElement childElement : viewElement.getAsJsonArray("children")) {
-            children.add(parseRemoteViewNode(childElement.getAsJsonObject()));
-        }
+        PendingIntent onPress = null;
 
-        PendingIntent onClick = null;
-        if (viewElement.has("onClick") && !viewElement.get("onClick").isJsonNull()) {
-            String actionUri = viewElement.get("onClick").getAsString();
-            Intent actionIntent = new Intent(this, TestService.class);
-            actionIntent.setAction(actionUri);
-            onClick = PendingIntent.getService(this, 0, actionIntent, 0);
+        JsonObject propsObject = viewElement.getAsJsonObject("props");
+        for (Map.Entry<String, JsonElement> entry : propsObject.entrySet()) {
+            if (entry.getKey().equals("children")) {
+                for (JsonElement childElement : entry.getValue().getAsJsonArray()) {
+                    children.add(parseRemoteViewNode(childElement.getAsJsonObject()));
+                }
+            } else if (entry.getKey().equals("onPress")) {
+                String actionUri = entry.getValue().getAsString();
+                Intent actionIntent = new Intent(this, TestService.class);
+                actionIntent.setAction(actionUri);
+                onPress = PendingIntent.getService(this, 0, actionIntent, 0);
+            } else {
+                props.add(parseProperty(entry));
+            }
         }
 
         return new RemoteViewNode(
                 viewElement.get("type").getAsString(),
-                properties,
+                props,
                 children,
-                onClick);
+                onPress);
     }
 
     private RemoteViewProperty parseProperty(Map.Entry<String, JsonElement> entry) {

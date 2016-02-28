@@ -1,3 +1,4 @@
+import React from 'react-native';
 import BatchedBridge from 'BatchedBridge';
 import { NativeModules } from 'react-native'
 
@@ -23,39 +24,25 @@ const ServiceTopLevel = {
                 // ic_media_pause and ic_media_play
                 const iconResource = isPlaying ? 17301539 : 17301540;
                 const actionUri = isPlaying ? "com.alangpierce.wikipediareader.pause" : "com.alangpierce.wikipediareader.play";
+
+                const LinearLayout = "LinearLayout";
+                const TextView = "TextView";
+                const ImageButton = "ImageButton";
+
                 const notification = {
-                    customView: {
-                        type: "LinearLayout",
-                        properties: {
-                            backgroundColor: "#000000",
-                            gravity: "center"
-                        },
-                        children: [
-                            {
-                                type: "TextView",
-                                properties: {
-                                    text: "Counting",
-                                    textSize: 20,
-                                    textColor: "#ffffff",
-                                },
-                                children: [],
-                                onClick: null,
-                            },
-                            {
-                                type: "ImageButton",
-                                properties: {
-                                    // TODO: Make it possible to reference a
-                                    // normal icon.
-                                    imageResource: iconResource,
-                                    backgroundColor: "#000000",
-                                },
-                                children: [],
-                                onClick: actionUri,
-                            }
-                        ],
-                        onClick: null,
-                    },
+                    customView: <LinearLayout backgroundColor="#000000"
+                                              gravity="center">
+                        <TextView text="Counting"
+                                  textSize={20}
+                                  textColor="#ffffff"/>
+                        <ImageButton imageResource={iconResource}
+                                     backgroundColor="#000000"
+                                     onPress={actionUri}/>
+                    </LinearLayout>
                 };
+
+                console.log("JSX value:");
+                console.log(foo);
 
                 console.log("Making call to invalidateNotification");
                 NativeModules.StartService.invalidateNotification(
