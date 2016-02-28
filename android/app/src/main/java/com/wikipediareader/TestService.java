@@ -27,8 +27,10 @@ import java.util.Map;
 public class TestService extends Service {
     private static final int ONGOING_NOTIFICATION_ID = 1;
 
-    private static final String PAUSE_ACTION_URI = "com.alangpierce.wikipediareader.pause";
-    private static final String PLAY_ACTION_URI = "com.alangpierce.wikipediareader.play";
+    // We put the callback ID into the intent UI, since the system only wants one outstanding
+    // PendingIntent per URI. If we try to specify the callback ID through an extra, different
+    // PendingIntents will clobber each other.
+    private static final String RUN_CALLBACK_URI_PREFIX = "com.alangpierce.runcallback.";
     public static final String REDRAW_NOTIFICATION_URI = "com.alangpierce.wikipediareader.redraw";
 
     private ServiceTopLevel serviceTopLevel;
@@ -92,9 +94,9 @@ public class TestService extends Service {
                     children.add(parseRemoteViewNode(childElement.getAsJsonObject()));
                 }
             } else if (entry.getKey().equals("onPress")) {
-                String actionUri = entry.getValue().getAsString();
                 Intent actionIntent = new Intent(this, TestService.class);
-                actionIntent.setAction(actionUri);
+                actionIntent.setAction(RUN_CALLBACK_URI_PREFIX + entry.getValue().getAsString());
+                System.out.println("Setting intent with callback " + entry.getValue().getAsString());
                 onPress = PendingIntent.getService(this, 0, actionIntent, 0);
             } else {
                 props.add(parseProperty(entry));
@@ -132,10 +134,9 @@ public class TestService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction() != null) {
-            if (intent.getAction().equals(PAUSE_ACTION_URI)) {
-                serviceTopLevel.pause(0);
-            } else if (intent.getAction().equals(PLAY_ACTION_URI)) {
-                serviceTopLevel.play(0);
+            if (intent.getAction().startsWith(RUN_CALLBACK_URI_PREFIX)) {
+                String callbackId = intent.getAction().substring(RUN_CALLBACK_URI_PREFIX.length());
+                serviceTopLevel.runCallback(callbackId);
             } else if (intent.getAction().equals(REDRAW_NOTIFICATION_URI)) {
                 String notificationJson = intent.getStringExtra("notification");
                 JsonObject notificationObject = new JsonParser().parse(notificationJson).getAsJsonObject();
