@@ -1,4 +1,4 @@
-rootProject.name = 'WikipediaReader'
+rootProject.name = 'AudioDemo'
 
 include ':app'
 include ':react-native-android-speech'
