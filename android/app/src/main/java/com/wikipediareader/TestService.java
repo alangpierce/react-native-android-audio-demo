@@ -6,6 +6,9 @@ import com.alangpierce.reactremoteviews.RemoteViewRenderer;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.CatalystInstance;
 import com.facebook.react.bridge.ReactContext;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -17,7 +20,9 @@ import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.widget.RemoteViews;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class TestService extends Service {
     private static final int ONGOING_NOTIFICATION_ID = 1;
@@ -49,12 +54,13 @@ public class TestService extends Service {
         }
 
         // The service always starts by starting audio, so true is a good default for isPlaying.
-        startForeground(ONGOING_NOTIFICATION_ID, createNotification(true));
+        // TODO: Uncomment this, or find another way to make sure the notification always shows up.
+//        startForeground(ONGOING_NOTIFICATION_ID, createNotification(true));
 
         serviceTopLevel.initService(0);
     }
 
-    private Notification createNotification(boolean isPlaying) {
+    private Notification createNotification(boolean isPlaying, JsonElement notificationElement) {
         Intent mainActivityIntent = new Intent(this, MainActivity.class);
         // TODO: Figure out how to make it just dismiss the notification screen if the activity is
         // already active. This flag doesn't seem to be working like I thought it would.
@@ -77,35 +83,7 @@ public class TestService extends Service {
 
         PendingIntent actionPendingIntent = PendingIntent.getService(this, 0, actionIntent, 0);
 
-        RemoteViewNode node = new RemoteViewNode(
-                "LinearLayoutMatchParent",
-                Arrays.asList(
-                        new RemoteViewProperty("setBackgroundColor", RemoteViewProperty.PropertyType.INT, Color.parseColor("#000000")),
-                        new RemoteViewProperty("setGravity", RemoteViewProperty.PropertyType.INT, Gravity.CENTER)
-                ),
-                Arrays.asList(
-                        new RemoteViewNode(
-                                "TextView",
-                                Arrays.<RemoteViewProperty>asList(
-                                        new RemoteViewProperty("setText", RemoteViewProperty.PropertyType.CHAR_SEQUENCE, "Counting"),
-                                        new RemoteViewProperty("setTextSize", RemoteViewProperty.PropertyType.FLOAT, 20.0f),
-                                        new RemoteViewProperty("setTextColor", RemoteViewProperty.PropertyType.INT, Color.parseColor("#ffffff"))
-                                ),
-                                Arrays.<RemoteViewNode>asList(),
-                                null
-                        ),
-                        new RemoteViewNode(
-                                "ImageButton",
-                                Arrays.<RemoteViewProperty>asList(
-                                        new RemoteViewProperty("setImageResource", RemoteViewProperty.PropertyType.INT, buttonImage),
-                                        new RemoteViewProperty("setBackgroundColor", RemoteViewProperty.PropertyType.INT, Color.parseColor("#000000"))
-                                ),
-                                Arrays.<RemoteViewNode>asList(),
-                                actionPendingIntent
-                        )
-                ),
-                null
-        );
+        RemoteViewNode node = parseRemoteViewNode(notificationElement.getAsJsonObject().getAsJsonObject("customView"));
 
         RemoteViews notificationView = new RemoteViewRenderer(getPackageName()).renderNode(node);
 
@@ -117,6 +95,50 @@ public class TestService extends Service {
                 .build();
     }
 
+    private RemoteViewNode parseRemoteViewNode(JsonObject viewElement) {
+        List<RemoteViewProperty> properties = new ArrayList<>();
+
+        for (Map.Entry<String, JsonElement> entry : viewElement.getAsJsonObject("properties").entrySet()) {
+            properties.add(parseProperty(entry));
+        }
+
+        List<RemoteViewNode> children = new ArrayList<>();
+        for (JsonElement childElement : viewElement.getAsJsonArray("children")) {
+            children.add(parseRemoteViewNode(childElement.getAsJsonObject()));
+        }
+
+        if (viewElement.has("onClick")) {
+            // TODO
+        }
+
+        return new RemoteViewNode(
+                viewElement.get("type").getAsString(),
+                properties,
+                children,
+                null);
+    }
+
+    private RemoteViewProperty parseProperty(Map.Entry<String, JsonElement> entry) {
+        JsonElement value = entry.getValue();
+        switch (entry.getKey()) {
+            case "backgroundColor":
+                return new RemoteViewProperty("setBackgroundColor", RemoteViewProperty.PropertyType.INT, Color.parseColor(value.getAsString()));
+            case "gravity":
+                // TODO: Parse the value
+                return new RemoteViewProperty("setGravity", RemoteViewProperty.PropertyType.INT, Gravity.CENTER);
+            case "text":
+                return new RemoteViewProperty("setText", RemoteViewProperty.PropertyType.CHAR_SEQUENCE, value.getAsString());
+            case "textSize":
+                return new RemoteViewProperty("setTextSize", RemoteViewProperty.PropertyType.FLOAT, value.getAsFloat());
+            case "textColor":
+                return new RemoteViewProperty("setTextColor", RemoteViewProperty.PropertyType.INT, Color.parseColor(value.getAsString()));
+            case "imageResource":
+                return new RemoteViewProperty("setImageResource", RemoteViewProperty.PropertyType.INT, value.getAsInt());
+            default:
+                throw new RuntimeException("Unexpected property name " + entry.getKey());
+        }
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction() != null) {
@@ -126,7 +148,9 @@ public class TestService extends Service {
                 serviceTopLevel.play(0);
             } else if (intent.getAction().equals(REDRAW_NOTIFICATION_URI)) {
                 boolean isPlaying = intent.getBooleanExtra("isPlaying", false);
-                startForeground(ONGOING_NOTIFICATION_ID, createNotification(isPlaying));
+                String notificationJson = intent.getStringExtra("notification");
+                JsonElement notificationElement = new JsonParser().parse(notificationJson);
+                startForeground(ONGOING_NOTIFICATION_ID, createNotification(isPlaying, notificationElement));
                 if (!isPlaying) {
                     // In a paused state, we don't want the notification to be ongoing. Clearing the
                     // foreground state does that.
@@ -136,4 +160,6 @@ public class TestService extends Service {
         }
         return START_STICKY;
     }
+
+
 }

@@ -20,7 +20,45 @@ const ServiceTopLevel = {
         observeStore((newState, oldState) => {
             const isPlaying = newState.isPlaying;
             if (oldState.isPlaying != isPlaying) {
-                NativeModules.StartService.invalidateNotification(isPlaying);
+                // ic_media_pause and ic_media_play
+                const iconResource = isPlaying ? 17301539 : 17301540;
+                const notification = {
+                    customView: {
+                        type: "LinearLayout",
+                        properties: {
+                            backgroundColor: "#000000",
+                            gravity: "center"
+                        },
+                        children: [
+                            {
+                                type: "TextView",
+                                properties: {
+                                    text: "Counting",
+                                    textSize: 20,
+                                    textColor: "#ffffff",
+                                },
+                                children: [],
+                                onClick: null,
+                            },
+                            {
+                                type: "ImageButton",
+                                properties: {
+                                    // TODO: Make it possible to reference a
+                                    // normal icon.
+                                    imageResource: iconResource,
+                                    backgroundColor: "#000000",
+                                },
+                                children: [],
+                                onClick: null,
+                            }
+                        ],
+                        onClick: null,
+                    },
+                };
+
+                console.log("Making call to invalidateNotification");
+                NativeModules.StartService.invalidateNotification(
+                    isPlaying, JSON.stringify(notification));
             }
         });
     },

@@ -28,10 +28,14 @@ public class StartServiceModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void invalidateNotification(boolean isPlaying) {
+    public void invalidateNotification(boolean isPlaying, String notificationJson) {
+        System.out.println("Received call to invalidateNotification. Map is " + notificationJson);
         Intent redrawIntent = new Intent(mReactApplicationContext, TestService.class);
         redrawIntent.setAction(TestService.REDRAW_NOTIFICATION_URI);
         redrawIntent.putExtra("isPlaying", isPlaying);
+        // We use plain old JSON here because ReadableMap is a pain to put in an intent, it seems.
+        // Ideally we would be able to just use ReadableMap without any serialization.
+        redrawIntent.putExtra("notification", notificationJson);
         mReactApplicationContext.startService(redrawIntent);
     }
 }

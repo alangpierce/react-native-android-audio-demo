@@ -51,7 +51,7 @@ public class RemoteViewRenderer {
         switch (className) {
             case "LinearLayoutWrapContent":
                 return R.layout.linear_layout_wrap_content;
-            case "LinearLayoutMatchParent":
+            case "LinearLayout":
                 return R.layout.linear_layout_match_parent;
             case "TextView":
                 return R.layout.text_view;
