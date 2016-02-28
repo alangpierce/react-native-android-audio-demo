@@ -1,5 +1,6 @@
 package com.wikipediareader;
 
+import com.alangpierce.reactremoteviews.RemoteViewsPackage;
 import com.facebook.react.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
@@ -41,6 +42,7 @@ public class ReactInstanceSingleton {
         return Arrays.asList(
                 new MainReactPackage(),
                 new StartServicePackage(),
+                new RemoteViewsPackage(),
                 new RCTTextToSpeechModule()
         );
     }

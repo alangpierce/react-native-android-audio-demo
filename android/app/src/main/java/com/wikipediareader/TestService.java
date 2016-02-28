@@ -3,6 +3,7 @@ package com.wikipediareader;
 import com.alangpierce.reactremoteviews.RemoteViewNode;
 import com.alangpierce.reactremoteviews.RemoteViewProperty;
 import com.alangpierce.reactremoteviews.RemoteViewRenderer;
+import com.alangpierce.reactremoteviews.RemoteViewsModule;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.CatalystInstance;
 import com.facebook.react.bridge.ReactContext;
@@ -34,6 +35,7 @@ public class TestService extends Service {
     public static final String REDRAW_NOTIFICATION_URI = "com.alangpierce.wikipediareader.redraw";
 
     private ServiceTopLevel serviceTopLevel;
+    private RemoteViewsModule mRemoteViewsModule;
 
     @Nullable
     @Override
@@ -51,6 +53,7 @@ public class TestService extends Service {
             System.out.println("Grabbing JS service code");
             CatalystInstance catalystInstance = reactContext.getCatalystInstance();
             serviceTopLevel = catalystInstance.getJSModule(ServiceTopLevel.class);
+            mRemoteViewsModule = catalystInstance.getJSModule(RemoteViewsModule.class);
         } else {
             System.out.println("Couldn't grab JS service code");
         }
@@ -136,7 +139,7 @@ public class TestService extends Service {
         if (intent.getAction() != null) {
             if (intent.getAction().startsWith(RUN_CALLBACK_URI_PREFIX)) {
                 String callbackId = intent.getAction().substring(RUN_CALLBACK_URI_PREFIX.length());
-                serviceTopLevel.runCallback(callbackId);
+                mRemoteViewsModule.runCallback(callbackId);
             } else if (intent.getAction().equals(REDRAW_NOTIFICATION_URI)) {
                 String notificationJson = intent.getStringExtra("notification");
                 JsonObject notificationObject = new JsonParser().parse(notificationJson).getAsJsonObject();
@@ -151,3 +154,4 @@ public class TestService extends Service {
         return START_STICKY;
     }
 }
+
