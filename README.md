@@ -1,7 +1,7 @@
 # React Native Android Audio Demo
 
-This is a proof of concept for how to build an audio app (like a music of
-podcast player) for Android in React Native, as of early 2016. Unlike previous
+This is a proof of concept for how to build an audio app (like a music or
+podcast player) for Android in React Native, as of early 2016. Unlike some other
 examples, this app properly creates an Android `Service` to manage audio, which
 means that the audio will keep playing even when the `Activity` is destroyed.
 Using a `Service` required opening some escape hatches in React Native, since it
