@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Static storage of the React instance, used to share a JS heap across
+ * Static storage of the React instance, used to share a JS heap across the activity and service.
  */
 public class ReactInstanceSingleton {
     private static volatile ReactInstanceManager sSingletonManager;

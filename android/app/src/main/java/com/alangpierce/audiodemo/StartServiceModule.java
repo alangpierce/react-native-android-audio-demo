@@ -21,17 +21,14 @@ public class StartServiceModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void startService() {
-        System.out.println("Hello from native module!");
-
-        Intent serviceIntent = new Intent(mReactApplicationContext, TestService.class);
+        Intent serviceIntent = new Intent(mReactApplicationContext, AudioService.class);
         mReactApplicationContext.startService(serviceIntent);
     }
 
     @ReactMethod
     public void invalidateNotification(String notificationJson) {
-        System.out.println("Received call to invalidateNotification. Map is " + notificationJson);
-        Intent redrawIntent = new Intent(mReactApplicationContext, TestService.class);
-        redrawIntent.setAction(TestService.REDRAW_NOTIFICATION_URI);
+        Intent redrawIntent = new Intent(mReactApplicationContext, AudioService.class);
+        redrawIntent.setAction(AudioService.REDRAW_NOTIFICATION_URI);
         // We use plain old JSON here because ReadableMap is a pain to put in an intent, it seems.
         // Ideally we would be able to just use ReadableMap without any serialization.
         redrawIntent.putExtra("notification", notificationJson);

@@ -14,7 +14,6 @@ export const processCallbacks = (view) => {
     };
     if (view.props.hasOwnProperty("onPress")) {
         newProps.onPress = generateIdForFunction(view.props.onPress);
-        console.log("Set callback ID to " + view.props.onPress);
     }
 
     const newChildren = [];
@@ -48,7 +47,6 @@ const generateIdForFunction = (func) => {
 
 const RemoteViewsModule = {
     runCallback: (callbackId) => {
-        console.log("Invoking callback " + callbackId);
         CALLBACKS_BY_ID[callbackId]();
     },
 };

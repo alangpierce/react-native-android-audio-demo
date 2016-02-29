@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.RemoteViews;
 
@@ -25,7 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class TestService extends Service {
+public class AudioService extends Service {
+    private static final String TAG = "AudioService";
+
     private static final int ONGOING_NOTIFICATION_ID = 1;
 
     // We put the callback ID into the intent UI, since the system only wants one outstanding
@@ -50,12 +53,11 @@ public class TestService extends Service {
 
         ReactContext reactContext = reactInstanceManager.getCurrentReactContext();
         if (reactContext != null) {
-            System.out.println("Grabbing JS service code");
             CatalystInstance catalystInstance = reactContext.getCatalystInstance();
             serviceTopLevel = catalystInstance.getJSModule(ServiceTopLevel.class);
             mRemoteViewsModule = catalystInstance.getJSModule(RemoteViewsModule.class);
         } else {
-            System.out.println("Couldn't grab JS service code");
+            Log.e(TAG, "Couldn't grab JS service code");
         }
 
         // The service always starts by starting audio, so true is a good default for isPlaying.
@@ -97,9 +99,8 @@ public class TestService extends Service {
                     children.add(parseRemoteViewNode(childElement.getAsJsonObject()));
                 }
             } else if (entry.getKey().equals("onPress")) {
-                Intent actionIntent = new Intent(this, TestService.class);
+                Intent actionIntent = new Intent(this, AudioService.class);
                 actionIntent.setAction(RUN_CALLBACK_URI_PREFIX + entry.getValue().getAsString());
-                System.out.println("Setting intent with callback " + entry.getValue().getAsString());
                 onPress = PendingIntent.getService(this, 0, actionIntent, 0);
             } else {
                 props.add(parseProperty(entry));

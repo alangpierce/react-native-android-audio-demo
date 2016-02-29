@@ -162,7 +162,6 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        System.out.println("Called save instance state!");
         super.onSaveInstanceState(outState);
     }
 }
