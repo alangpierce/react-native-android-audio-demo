@@ -3,3 +3,5 @@ rootProject.name = 'AudioDemo'
 include ':app'
 include ':react-native-android-speech'
 project(':react-native-android-speech').projectDir = new File(settingsDir, '../node_modules/react-native-android-speech')
+include ':react-android-remote-views'
+project(':react-android-remote-views').projectDir = new File(settingsDir, '../node_modules/react-android-remote-views')
