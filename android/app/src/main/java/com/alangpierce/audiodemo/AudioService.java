@@ -54,10 +54,6 @@ public class AudioService extends Service {
             Log.e(TAG, "Couldn't grab JS service code");
         }
 
-        // The service always starts by starting audio, so true is a good default for isPlaying.
-        // TODO: Uncomment this, or find another way to make sure the notification always shows up.
-//        startForeground(ONGOING_NOTIFICATION_ID, createNotification(true));
-
         serviceTopLevel.initService(0);
     }
 

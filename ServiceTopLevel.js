@@ -28,25 +28,29 @@ const ServiceTopLevel = {
         observeStore((newState, oldState) => {
             const isPlaying = newState.isPlaying;
             if (oldState.isPlaying != isPlaying) {
-                // ic_media_pause and ic_media_play
-                const iconResource = isPlaying ? 17301539 : 17301540;
-                const action = isPlaying ? ServiceTopLevel.pause : ServiceTopLevel.play;
-
-                const notification = {
-                    isForeground: isPlaying,
-                    customView: <LinearLayout backgroundColor="#000000"
-                                              gravity="center">
-                        <TextView text="Counting"
-                                  textSize={20}
-                                  textColor="#ffffff"/>
-                        <ImageButton imageResource={iconResource}
-                                     backgroundColor="#000000"
-                                     onPress={action}/>
-                    </LinearLayout>
-                };
-                setNotification(notification);
+                ServiceTopLevel.refreshNotification(isPlaying);
             }
         });
+        ServiceTopLevel.refreshNotification(true);
+    },
+    refreshNotification: (isPlaying) => {
+        // ic_media_pause and ic_media_play
+        const iconResource = isPlaying ? 17301539 : 17301540;
+        const action = isPlaying ? ServiceTopLevel.pause : ServiceTopLevel.play;
+
+        const notification = {
+            isForeground: isPlaying,
+            customView: <LinearLayout backgroundColor="#000000"
+                                      gravity="center">
+                <TextView text="Counting"
+                          textSize={20}
+                          textColor="#ffffff"/>
+                <ImageButton imageResource={iconResource}
+                             backgroundColor="#000000"
+                             onPress={action}/>
+            </LinearLayout>
+        };
+        setNotification(notification);
     },
     pause: () => {
         store.dispatch(pause());
