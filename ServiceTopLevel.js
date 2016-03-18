@@ -2,7 +2,7 @@ import React from 'react-native';
 import BatchedBridge from 'BatchedBridge';
 import { NativeModules } from 'react-native'
 
-import { LinearLayout, TextView, ImageButton, processCallbacks } from 'react-android-remote-views'
+import { LinearLayout, TextView, ImageButton, processCallbacks } from './remote-views'
 import { pause, play } from './actions'
 import store from './store'
 
